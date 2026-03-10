@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Page = styled.div`
   background: #f5f7fb;
@@ -127,6 +128,20 @@ function Context(){
 
   const navigate = useNavigate();
 
+  // validation state
+  const [patientAdded,setPatientAdded] = useState(false);
+
+  const handleAddPatient = () => {
+    setPatientAdded(true);
+    navigate("/add-patient");
+  };
+
+  const handleNext = () => {
+    if(patientAdded){
+      navigate("/chronology");
+    }
+  };
+
   return(
     <Page>
 
@@ -208,7 +223,7 @@ function Context(){
 
                 <button
                   className="btn btn-primary"
-                  onClick={() => navigate("/add-patient")}
+                  onClick={handleAddPatient}
                 >
                   Add Patient
                 </button>
@@ -263,7 +278,8 @@ function Context(){
 
         <button
           className="btn btn-primary px-4 py-2"
-          onClick={() => navigate("/chronology")}
+          disabled={!patientAdded}
+          onClick={handleNext}
         >
           → Confirm & Start Investigation
         </button>

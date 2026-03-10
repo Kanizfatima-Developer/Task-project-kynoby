@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Page = styled.div`
   background: #f5f7fb;
@@ -87,6 +88,11 @@ const Message = styled.h3`
   margin-bottom: 25px;
 `;
 
+const CheckboxBox = styled.div`
+  margin-bottom: 20px;
+  font-size: 15px;
+`;
+
 const Button = styled.button`
   padding: 12px 30px;
   border-radius: 8px;
@@ -95,11 +101,20 @@ const Button = styled.button`
   color: white;
   cursor: pointer;
   font-size: 15px;
+  opacity: ${(props) => (props.disabled ? "0.5" : "1")};
 `;
 
 function Setup() {
 
   const navigate = useNavigate();
+
+  const [confirmed,setConfirmed] = useState(false);
+
+  const handleNext = () => {
+    if(confirmed){
+      navigate("/context");
+    }
+  };
 
   return (
     <Page>
@@ -163,7 +178,24 @@ function Setup() {
           Intake complete. Proceeding to Setup...
         </Message>
 
-        <Button onClick={() => navigate("/context")}>
+        <CheckboxBox>
+
+          <input
+            type="checkbox"
+            checked={confirmed}
+            onChange={(e)=>setConfirmed(e.target.checked)}
+          />
+
+          <span style={{marginLeft:"10px"}}>
+            I confirm the intake information is correct
+          </span>
+
+        </CheckboxBox>
+
+        <Button
+          disabled={!confirmed}
+          onClick={handleNext}
+        >
           Begin Setup
         </Button>
 

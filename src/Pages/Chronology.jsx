@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Page = styled.div`
@@ -56,9 +57,9 @@ const Circle = styled.div`
   width:40px;
   height:40px;
   border-radius:50%;
-  border:2px solid ${(p) => p.active ? "#4f46e5" : "#cbd5e1"};
-  background:${(p) => p.done ? "#4f46e5" : "white"};
-  color:${(p) => p.done ? "white" : (p.active ? "#4f46e5" : "#94a3b8")};
+  border:2px solid ${(p)=>p.active ? "#4f46e5" : "#cbd5e1"};
+  background:${(p)=>p.done ? "#4f46e5" : "white"};
+  color:${(p)=>p.done ? "white" : (p.active ? "#4f46e5" : "#94a3b8")};
   display:flex;
   align-items:center;
   justify-content:center;
@@ -87,8 +88,8 @@ const Tabs = styled.div`
 const Tab = styled.div`
   padding:15px 20px;
   cursor:pointer;
-  color:${p => p.active ? "#4f46e5" : "#6b7280"};
-  border-bottom:${p => p.active ? "3px solid #4f46e5" : "none"};
+  color:${p=>p.active ? "#4f46e5" : "#6b7280"};
+  border-bottom:${p=>p.active ? "3px solid #4f46e5" : "none"};
 `;
 
 const Timeline = styled.div`
@@ -143,21 +144,32 @@ const FormCard = styled.div`
   padding:25px;
 `;
 
-function Chronology() {
+function Chronology(){
 
   const navigate = useNavigate();
 
+  const [date,setDate] = useState("");
+  const [description,setDescription] = useState("");
+  const [source,setSource] = useState("");
+
+  const isFormValid =
+    date.trim() !== "" &&
+    description.trim() !== "" &&
+    source.trim() !== "";
+
   const goToInterviews = () => {
-    navigate("/interviews");
+    if(isFormValid){
+      navigate("/interviews");
+    }
   };
 
-  return (
+  return(
 
     <Page>
 
       <Header>
 
-        <Back onClick={() => navigate("/context")}>
+        <Back onClick={()=>navigate("/context")}>
           ← Back to Queue
         </Back>
 
@@ -175,35 +187,35 @@ function Chronology() {
           <Label>Setup</Label>
         </Step>
 
-        <Line />
+        <Line/>
 
         <Step>
           <Circle done>✓</Circle>
           <Label>Context</Label>
         </Step>
 
-        <Line />
+        <Line/>
 
         <Step>
           <Circle active>3</Circle>
           <Label>Investigate</Label>
         </Step>
 
-        <Line />
+        <Line/>
 
         <Step>
           <Circle>4</Circle>
           <Label>Drafting</Label>
         </Step>
 
-        <Line />
+        <Line/>
 
         <Step>
           <Circle>5</Circle>
           <Label>Review</Label>
         </Step>
 
-        <Line />
+        <Line/>
 
         <Step>
           <Circle>6</Circle>
@@ -236,9 +248,8 @@ function Chronology() {
 
             <Timeline>
 
-              {/* Event 1 */}
               <TimelineItem>
-                <Dot />
+                <Dot/>
                 <EventCard>
                   <Date>
                     2023-05-06
@@ -248,33 +259,30 @@ function Chronology() {
                 </EventCard>
               </TimelineItem>
 
-
-              {/* Event 2 */}
               <TimelineItem>
-                <Dot />
+                <Dot/>
                 <EventCard>
                   <Date>
-                   2024-05-07
+                    2024-05-07
                     <Tag>Appointment</Tag>
                   </Date>
-                  Patient call for booking appointment 
+                  Patient call for booking appointment
                 </EventCard>
               </TimelineItem>
 
-
-              {/* Event 3 */}
               <TimelineItem>
-                <Dot />
+                <Dot/>
                 <EventCard>
                   <Date>
                     2024-05-07
                     <Tag>Complaint</Tag>
                   </Date>
-                  Patient generate Appointment Issued
+                  Patient generate Appointment Issue
                 </EventCard>
               </TimelineItem>
 
             </Timeline>
+
           </div>
 
           <div className="col-lg-4">
@@ -290,6 +298,8 @@ function Chronology() {
                 <input
                   type="date"
                   className="form-control"
+                  value={date}
+                  onChange={(e)=>setDate(e.target.value)}
                 />
 
               </div>
@@ -301,6 +311,8 @@ function Chronology() {
                 <textarea
                   className="form-control"
                   rows="3"
+                  value={description}
+                  onChange={(e)=>setDescription(e.target.value)}
                 />
 
               </div>
@@ -312,12 +324,15 @@ function Chronology() {
                 <input
                   className="form-control"
                   placeholder="Example: EMIS / Letter / Call"
+                  value={source}
+                  onChange={(e)=>setSource(e.target.value)}
                 />
 
               </div>
 
               <button
                 className="btn btn-primary w-100"
+                disabled={!isFormValid}
                 onClick={goToInterviews}
               >
                 Add to Timeline

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Page = styled.div`
@@ -144,19 +145,22 @@ const UploadBox = styled.div`
   text-align:center;
   color:#6b7280;
   background:#fafafa;
-  cursor:pointer;
-
-  &:hover{
-    background:#f1f5f9;
-  }
 `;
 
 function Evidence(){
 
   const navigate = useNavigate();
 
+  const [fileUploaded,setFileUploaded] = useState(false);
+
   const handleUpload = () => {
-    navigate("/review-case");
+    setFileUploaded(true);
+  };
+
+  const goToReview = () => {
+    if(fileUploaded){
+      navigate("/review-case");
+    }
   };
 
   return(
@@ -254,15 +258,19 @@ function Evidence(){
 
               <h5>Attached Files</h5>
 
-              <FileItem>
+              {fileUploaded && (
 
-                evidence_report_2026-02-10.pdf
+                <FileItem>
 
-                <FileTag>
-                  Read Only
-                </FileTag>
+                  uploaded_report.pdf
 
-              </FileItem>
+                  <FileTag>
+                    Uploaded
+                  </FileTag>
+
+                </FileItem>
+
+              )}
 
             </Card>
 
@@ -283,6 +291,16 @@ function Evidence(){
                 onClick={handleUpload}
               >
                 Upload File
+              </button>
+
+              <br/><br/>
+
+              <button
+                className="btn btn-success"
+                disabled={!fileUploaded}
+                onClick={goToReview}
+              >
+                Continue to Review
               </button>
 
             </UploadBox>

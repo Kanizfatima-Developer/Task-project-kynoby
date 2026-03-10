@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const Page = styled.div`
@@ -167,8 +168,19 @@ function Interviews(){
 
   const navigate = useNavigate();
 
+  const [staffName,setStaffName] = useState("");
+  const [date,setDate] = useState("");
+  const [notes,setNotes] = useState("");
+
+  const isFormValid =
+    staffName.trim() !== "" &&
+    date.trim() !== "" &&
+    notes.trim() !== "";
+
   const handleSave = () => {
-    navigate("/evidence");
+    if(isFormValid){
+      navigate("/evidence");
+    }
   };
 
   return(
@@ -276,14 +288,12 @@ function Interviews(){
 
           <div className="col-md-6">
 
-            <Card
-              style={{
-                display:"flex",
-                alignItems:"center",
-                justifyContent:"center",
-                height:"100%"
-              }}
-            >
+            <Card style={{
+              display:"flex",
+              alignItems:"center",
+              justifyContent:"center",
+              height:"100%"
+            }}>
               Recorded statements appear here
             </Card>
 
@@ -298,19 +308,32 @@ function Interviews(){
           <div className="row">
 
             <div className="col-md-6">
-              <Input placeholder="Staff Name"/>
+              <Input
+                placeholder="Staff Name"
+                value={staffName}
+                onChange={(e)=>setStaffName(e.target.value)}
+              />
             </div>
 
             <div className="col-md-6">
-              <Input type="date"/>
+              <Input
+                type="date"
+                value={date}
+                onChange={(e)=>setDate(e.target.value)}
+              />
             </div>
 
           </div>
 
-          <TextArea placeholder="Statement Notes"/>
+          <TextArea
+            placeholder="Statement Notes"
+            value={notes}
+            onChange={(e)=>setNotes(e.target.value)}
+          />
 
           <button
             className="btn btn-primary w-100"
+            disabled={!isFormValid}
             onClick={handleSave}
           >
             Save Statement

@@ -1,6 +1,12 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+
+import {
+  validateName,
+  validatePhone
+} from "../validations/formValidation";
 
 const Page = styled.div`
   background: #f5f7fb;
@@ -31,33 +37,6 @@ const PatientCard = styled.div`
   border: 1px solid #8fd6a8;
   border-radius: 10px;
   padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-`;
-
-const Avatar = styled.div`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: #d6f0df;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-`;
-
-const PatientInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const PatientName = styled.div`
-  font-weight: 600;
-`;
-
-const PatientPhone = styled.div`
-  color: #6b7280;
 `;
 
 const UploadCard = styled.div`
@@ -88,13 +67,19 @@ function Addpatient() {
 
   const navigate = useNavigate();
 
-  const patient = {
-    name: "Kanizfatima Pathan",
-    phone: "9876543219"
-  };
+  // form states
+  const [name,setName] = useState("");
+  const [phone,setPhone] = useState("");
+
+  // validation check
+  const isFormValid =
+    validateName(name) &&
+    validatePhone(phone);
 
   const handleNext = () => {
-    navigate("/chronology");
+    if(isFormValid){
+      navigate("/chronology");
+    }
   };
 
   return (
@@ -108,7 +93,7 @@ function Addpatient() {
 
         <div className="row g-4">
 
-          {/* Patient Card */}
+          {/* Patient Form */}
 
           <div className="col-md-6">
 
@@ -120,12 +105,49 @@ function Addpatient() {
 
               <PatientCard>
 
-                <Avatar>👤</Avatar>
+                <div className="mb-3">
 
-                <PatientInfo>
-                  <PatientName>{patient.name}</PatientName>
-                  <PatientPhone>{patient.phone}</PatientPhone>
-                </PatientInfo>
+                  <label className="form-label">
+                    Patient Name
+                  </label>
+
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={name}
+                    onChange={(e)=>setName(e.target.value)}
+                    placeholder="Enter patient name"
+                  />
+
+                  {!validateName(name) && name !== "" && (
+                    <div className="text-danger small mt-1">
+                      Only letters allowed
+                    </div>
+                  )}
+
+                </div>
+
+                <div className="mb-3">
+
+                  <label className="form-label">
+                    Phone Number
+                  </label>
+
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={phone}
+                    onChange={(e)=>setPhone(e.target.value)}
+                    placeholder="Enter phone number"
+                  />
+
+                  {!validatePhone(phone) && phone !== "" && (
+                    <div className="text-danger small mt-1">
+                      Enter valid 10 digit phone number
+                    </div>
+                  )}
+
+                </div>
 
               </PatientCard>
 
@@ -176,6 +198,7 @@ function Addpatient() {
 
         <button
           className="btn btn-primary px-4 py-2"
+          disabled={!isFormValid}
           onClick={handleNext}
         >
           → Confirm & Start Investigation
